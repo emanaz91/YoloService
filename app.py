@@ -215,13 +215,29 @@ def get_prediction_image(uid: str, request: Request):
         # If the client doesn't accept image, respond with 406 Not Acceptable
         raise HTTPException(status_code=406, detail="Client does not accept an image format")
 
+@app.get("/predictions/count")
+def predictions_count():
+    """
+        Get the total number of predictions made in the last week.
+        return: single integer value representing the count of predictions made in the last 7 days
+    """
+
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        query = """
+                SELECT COUNT(*) FROM prediction_sessions
+                WHERE timestamp >= datetime('now', '-7 days');
+                """
+        cursor.execute(query)
+        count = cursor.fetchone()[0]
+    return {"count": count}
+
 @app.get("/health")
 def health():
     """
     Health check endpoint
     """
     return {"status": "ok"}
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8080)
