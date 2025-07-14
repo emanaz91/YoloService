@@ -232,6 +232,33 @@ def predictions_count():
         count = cursor.fetchone()[0]
     return {"count": count}
 
+
+@app.get("/health")
+def health():
+    """
+    Health check endpoint
+    """
+    return {"status": "ok"}
+
+
+@app.get("/labels")
+def get_unique_labels_last_week():
+    """
+    Return all unique object labels detected in the last 7 days
+    """
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        query = """
+            SELECT DISTINCT do.label
+            FROM detection_objects do
+            JOIN prediction_sessions ps ON do.prediction_uid = ps.uid
+            WHERE ps.timestamp >= datetime('now', '-7 days');
+        """
+        cursor.execute(query)
+        labels = [row[0] for row in cursor.fetchall()]
+    return {"labels": labels}
+
+
 @app.get("/health")
 def health():
     """
