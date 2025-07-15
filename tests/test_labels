@@ -52,9 +52,6 @@ class TestLabelsEndpoint(unittest.TestCase):
                 VALUES (?, ?, ?, ?)
             """, (old_uid, "outdated_label", 0.95, "[10,10,20,20]"))
 
-    def tearDown(self):
-        if os.path.exists(DB_PATH):
-            os.remove(DB_PATH)
 
     def test_labels_endpoint(self):
         response = self.client.get("/labels")

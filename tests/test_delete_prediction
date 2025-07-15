@@ -38,13 +38,6 @@ class TestDeletePredictionEndpoint(unittest.TestCase):
                 VALUES (?, ?, ?, ?)
             """, (self.uid, "car", 0.9, "[0,0,100,100]"))
 
-    def tearDown(self):
-        if os.path.exists(DB_PATH):
-            os.remove(DB_PATH)
-        if os.path.exists(self.original_path):
-            os.remove(self.original_path)
-        if os.path.exists(self.predicted_path):
-            os.remove(self.predicted_path)
 
     def test_delete_prediction_success(self):
         # Confirm prediction exists
